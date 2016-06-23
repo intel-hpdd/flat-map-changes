@@ -1,6 +1,6 @@
 {
   "name": "intel-flat-map-changes",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Highland.js flatMap transform that creates a new source when it's upstream changes.",
   "main": "dist/source/index.js",
   "scripts": {
