@@ -35,41 +35,43 @@ export const flatMapChangesWithSourceListener = fp.curry(3,
   (sourceChangeFn:mixedToMixedOrNullT, data$Fn:mixedTo$T, in$:HighlandStreamT<mixed>):HighlandStreamT<mixed> => {
     let data$:?HighlandStreamT<mixed>;
 
-    function consume (error, x, push, next) {
-      if (error) {
-        push(error);
-        return next();
-      }
+    const s =  highland((push, next) => {
+      in$.pull((err, x) => {
+        if (err) {
+          push(err);
+          return next();
+        }
 
-      if (data$) {
-        if (sourceChangeFn)
-          push(null, sourceChangeFn(x));
+        if (data$) {
+          if (sourceChangeFn)
+            push(null, sourceChangeFn(x));
 
-        data$.destroy();
-        data$ = null;
-      }
+          data$.destroy();
+          data$ = null;
+        }
 
-      if (x === highland.nil) {
-        push(null, x);
-      } else {
-        data$ = data$Fn(x);
+        if (x === highland.nil) {
+          push(null, highland.nil);
+        } else {
+          data$ = data$Fn(x);
 
-        data$
-          .errors(e => push(e))
-          .each(x => push(null, x));
+          data$
+             .errors(e => {
+               setTimeout(() => push(e));
+             })
+             .each(x => {
+               setTimeout(() => push(null, x));
+             });
 
-        next();
-      }
-    }
+          next();
+        }
+      });
+    });
 
-    const in2$ = in$.consume(consume);
+    s._destructors.push(in$.destroy.bind(in$));
 
-    // $FlowIgnore: flow does not recognize this monkey-patching.
-    in2$.destroy = in$.destroy.bind(in$);
-
-    return in2$;
-  }
-);
+    return s;
+  });
 
 
 export default flatMapChangesWithSourceListener(null);
