@@ -1,4 +1,5 @@
 [ignore]
+.*/flat-map-changes/dist.*
 .*node_modules/babel-.*
 .*node_modules/babylon.*
 

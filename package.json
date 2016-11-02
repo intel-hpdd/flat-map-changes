@@ -9,6 +9,7 @@
     "cover:dev": "npm run cover -- --reporter=html",
     "cover": "NODE_ENV=test ./bin/build.sh cover && nyc --reporter=text npm t",
     "eslint": "eslint ./",
+    "flow": "flow",
     "postversion": "./bin/build.sh"
   },
   "nyc": {
@@ -20,7 +21,8 @@
   },
   "pre-commit": [
     "eslint",
-    "test:dev"
+    "test:dev",
+    "flow"
   ],
   "repository": {
     "type": "git",
@@ -29,26 +31,27 @@
   "author": "IML Team",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "6.10.1",
-    "babel-core": "6.9.1",
-    "babel-eslint": "6.0.4",
+    "babel-cli": "6.18.0",
+    "babel-core": "6.18.2",
+    "babel-eslint": "7.1.0",
     "babel-plugin-__coverage__": "11.0.0",
-    "babel-plugin-transform-flow-strip-types": "6.8.0",
-    "babel-plugin-transform-strict-mode": "6.8.0",
-    "babel-preset-es2015": "6.9.0",
-    "eslint": "2.13.0",
-    "eslint-plugin-flow-vars": "0.4.0",
-    "eslint-plugin-flowtype": "2.2.7",
-    "intel-flow-highland": "3.1.0",
-    "intel-flow-jasmine": "1.0.0",
+    "babel-plugin-transform-flow-strip-types": "6.18.0",
+    "babel-plugin-transform-strict-mode": "6.18.0",
+    "babel-preset-es2015": "6.18.0",
+    "eslint": "3.9.1",
+    "eslint-plugin-flowtype": "2.25.0",
+    "eslint-plugin-import": "2.0.1",
+    "flow-bin": "0.34.0",
+    "intel-flow-highland": "3.9.0",
+    "intel-flow-jasmine": "1.5.0",
     "intel-jasmine-junit-reporter": "1.0.0",
     "intel-jasmine-n-matchers": "2.1.1",
-    "jasmine": "2.4.1",
-    "nyc": "6.6.1",
+    "jasmine": "2.5.2",
+    "nyc": "8.3.2",
     "pre-commit": "1.1.3"
   },
   "dependencies": {
-    "highland": "2.8.1",
-    "intel-fp": "4.4.0"
+    "highland": "3.0.0-beta.2",
+    "intel-fp": "7.0.0"
   }
 }

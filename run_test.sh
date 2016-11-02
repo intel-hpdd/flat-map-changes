@@ -3,7 +3,7 @@
 . ~/.nvm/nvm.sh
 
 NODE_VERSIONS="
-4
+6
 stable
 "
 
