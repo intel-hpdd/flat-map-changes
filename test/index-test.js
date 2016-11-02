@@ -9,45 +9,41 @@ import {
   jasmine
 } from './jasmine.js';
 
-import {
-  default as flatMapChanges,
-  flatMapChangesWithSourceListener
-} from '../source/index.js';
-
+import flatMapChanges from '../source/index.js';
 import highland from 'highland';
 
-function StreamError (err) {
-  this.__HighlandStreamError__ = true;
-  this.error = err;
-}
+const streamError = (error:Error) => ({
+  __HighlandStreamError__: true,
+  error
+});
 
 describe('flat map changes', () => {
-
-  let stream, changeToken, flatMapper,
-    listener, flatMapped$, source$;
+  let stream,
+    flatMapper,
+    getFlatMapped$,
+    source$;
 
   beforeEach(() => {
-    flatMapped$ = highland();
-    spyOn(flatMapped$, 'destroy')
-        .and
-        .callThrough();
-
     flatMapper = jasmine
         .createSpy('flatMapper')
         .and
-        .returnValue(flatMapped$);
+        .callFake(() => {
+          const flatMapped$ = highland();
+          spyOn(flatMapped$, 'destroy')
+              .and
+              .callThrough();
+          return flatMapped$;
+        });
+
+    getFlatMapped$ = () => flatMapper
+          .calls
+          .first()
+          .returnValue;
 
     source$ = highland();
     spyOn(source$, 'destroy');
 
-    changeToken = {};
-    listener = jasmine
-        .createSpy('listener')
-        .and
-        .returnValue(changeToken);
-
-    stream = flatMapChangesWithSourceListener(
-        listener,
+    stream = flatMapChanges(
         flatMapper,
         source$
       );
@@ -56,16 +52,6 @@ describe('flat map changes', () => {
   it('should return a stream', () => {
     expect(highland.isStream(stream))
       .toBe(true);
-  });
-
-  it('should call the listener when the upstream gets a new token', () => {
-    source$.write('bar');
-    source$.write('foo');
-
-    stream.each(() => {});
-
-    expect(listener)
-      .toHaveBeenCalledOnceWith('foo');
   });
 
   it('should call the flatMapper when the upstream gets a new token', () => {
@@ -78,7 +64,7 @@ describe('flat map changes', () => {
   });
 
   it('should push errors from upstream downstream', (done) => {
-    source$.write(new StreamError(
+    source$.write(streamError(
         new Error('boom!')
       ));
     source$.end();
@@ -94,9 +80,7 @@ describe('flat map changes', () => {
 
   it('should push errors from flatMapped stream downstream', (done) => {
     source$.write('foo');
-    flatMapped$.write(new StreamError(
-      new Error('boom!')
-    ));
+
 
     stream
       .errors(err => {
@@ -105,17 +89,24 @@ describe('flat map changes', () => {
         done();
       })
       .each(() => {});
+
+    getFlatMapped$()
+      .write(streamError(
+        new Error('boom!')
+      ));
   });
 
   it('should push a value from flatMapped stream downstream', (done) => {
     source$.write('foo');
-    flatMapped$.write('bar');
 
     stream
       .each(x => {
         expect(x).toBe('bar');
         done();
       });
+
+    getFlatMapped$()
+      .write('bar');
   });
 
   it('should destroy the downstream when the upstream gets a new token', () => {
@@ -124,8 +115,10 @@ describe('flat map changes', () => {
 
     stream.each(() => {});
 
-    expect(flatMapped$.destroy)
-      .toHaveBeenCalledOnce();
+    const s = getFlatMapped$();
+
+    expect(s.destroy)
+      .toHaveBeenCalled();
   });
 
   it('should destroy the upstream when downstream is destroyed', () => {
