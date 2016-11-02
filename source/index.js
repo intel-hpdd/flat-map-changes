@@ -28,14 +28,11 @@ import type {
   HighlandStreamT
 } from 'highland';
 
-type mixedTo$T = (data:mixed) => HighlandStreamT<mixed>;
-type mixedToMixedOrNullT = (x:mixed) => (mixed | null);
+export default fp.curry2(
+  <A, B> (data$Fn:(a:A) => HighlandStreamT<B>, in$:HighlandStreamT<A>):HighlandStreamT<B> => {
+    let data$:?HighlandStreamT<B>;
 
-export const flatMapChangesWithSourceListener = fp.curry(3,
-  (sourceChangeFn:mixedToMixedOrNullT, data$Fn:mixedTo$T, in$:HighlandStreamT<mixed>):HighlandStreamT<mixed> => {
-    let data$:?HighlandStreamT<mixed>;
-
-    const s =  highland((push, next) => {
+    return highland((push, next) => {
       in$.pull((err, x) => {
         if (err) {
           push(err);
@@ -43,9 +40,6 @@ export const flatMapChangesWithSourceListener = fp.curry(3,
         }
 
         if (data$) {
-          if (sourceChangeFn)
-            push(null, sourceChangeFn(x));
-
           data$.destroy();
           data$ = null;
         }
@@ -66,12 +60,6 @@ export const flatMapChangesWithSourceListener = fp.curry(3,
           next();
         }
       });
-    });
-
-    s._destructors.push(in$.destroy.bind(in$));
-
-    return s;
+    })
+      .onDestroy(() => in$.destroy());
   });
-
-
-export default flatMapChangesWithSourceListener(null);
