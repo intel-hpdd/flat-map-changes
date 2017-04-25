@@ -1,5 +1,5 @@
 {
-  "name": "intel-flat-map-changes",
+  "name": "@mfl/flat-map-changes",
   "version": "1.0.3",
   "description": "Highland.js flatMap transform that creates a new source when it's upstream changes.",
   "main": "dist/source/index.js",
@@ -17,7 +17,7 @@
     "instrument": false
   },
   "publishConfig": {
-    "registry": "https://ubit-artifactory-or.intel.com/artifactory/api/npm/iml-npm-local"
+    "access": "public"
   },
   "pre-commit": [
     "eslint",
@@ -26,9 +26,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.intel.com:IML/flat-map-changes.git"
+    "url": "git@github.intel.com:MFL/flat-map-changes.git"
   },
-  "author": "IML Team",
+  "author": "MFL Team",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "6.18.0",
@@ -42,16 +42,16 @@
     "eslint-plugin-flowtype": "2.25.0",
     "eslint-plugin-import": "2.0.1",
     "flow-bin": "0.34.0",
-    "intel-flow-highland": "3.9.0",
-    "intel-flow-jasmine": "1.5.0",
-    "intel-jasmine-junit-reporter": "1.0.0",
-    "intel-jasmine-n-matchers": "2.1.1",
+    "@mfl/flow-highland": "3.9.0",
+    "@mfl/flow-jasmine": "1.5.0",
+    "@mfl/jasmine-junit-reporter": "1.0.0",
+    "@mfl/jasmine-n-matchers": "2.1.1",
     "jasmine": "2.5.2",
     "nyc": "8.3.2",
     "pre-commit": "1.1.3"
   },
   "dependencies": {
     "highland": "3.0.0-beta.2",
-    "intel-fp": "7.0.0"
+    "@mfl/fp": "7.0.0"
   }
 }
