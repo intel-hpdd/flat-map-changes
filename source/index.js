@@ -22,44 +22,42 @@
 // express and approved by Intel in writing.
 
 import highland from 'highland';
-import * as fp from 'intel-fp';
 
-import type {
-  HighlandStreamT
-} from 'highland';
+import type { HighlandStreamT } from 'highland';
 
-export default fp.curry2(
-  <A, B> (data$Fn:(a:A) => HighlandStreamT<B>, in$:HighlandStreamT<A>):HighlandStreamT<B> => {
-    let data$:?HighlandStreamT<B>;
+export default <A, B>(
+  data$Fn: (a: A) => HighlandStreamT<B>,
+  in$: HighlandStreamT<A>
+): HighlandStreamT<B> => {
+  let data$: ?HighlandStreamT<B>;
 
-    return highland((push, next) => {
-      in$.pull((err, x) => {
-        if (err) {
-          push(err);
-          return next();
-        }
+  return highland((push, next) => {
+    in$.pull((err, x) => {
+      if (err) {
+        push(err);
+        return next();
+      }
 
-        if (data$) {
-          data$.destroy();
-          data$ = null;
-        }
+      if (data$) {
+        data$.destroy();
+        data$ = null;
+      }
 
-        if (x === highland.nil) {
-          push(null, highland.nil);
-        } else {
-          data$ = data$Fn(x);
+      if (x === highland.nil) {
+        push(null, highland.nil);
+      } else {
+        data$ = data$Fn(x);
 
-          data$
-             .errors(e => {
-               setTimeout(() => push(e));
-             })
-             .each(x => {
-               setTimeout(() => push(null, x));
-             });
+        data$
+          .errors(e => {
+            setTimeout(() => push(e));
+          })
+          .each(x => {
+            setTimeout(() => push(null, x));
+          });
 
-          next();
-        }
-      });
-    })
-      .onDestroy(() => in$.destroy());
-  });
+        next();
+      }
+    });
+  }).onDestroy(() => in$.destroy());
+};
