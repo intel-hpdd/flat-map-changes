@@ -10,19 +10,9 @@
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@mfl/flow-jasmine/-/flow-jasmine-1.6.1.tgz#ddf955193823af50f2180fc613e81cf7fbde2043"
 
-"@mfl/fp@8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@mfl/fp/-/fp-8.0.1.tgz#7b4b718551b02b3307639f1c9dd01c12a6de36ec"
-  dependencies:
-    "@mfl/maybe" "3.0.0"
-
 "@mfl/jasmine-n-matchers@2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@mfl/jasmine-n-matchers/-/jasmine-n-matchers-2.1.1.tgz#bf4ab1d4fff38152b1253bb9619e7e5e814926c6"
-
-"@mfl/maybe@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@mfl/maybe/-/maybe-3.0.0.tgz#184d40305afb14011eb9008677771c14d07d98fd"
 
 abab@^1.0.3:
   version "1.0.3"
