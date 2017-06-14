@@ -35,7 +35,7 @@
   "author": "MFL Team",
   "license": "MIT",
   "devDependencies": {
-    "@mfl/flow-highland": "4.2.4",
+    "@mfl/flow-highland": "4.2.7",
     "@mfl/flow-jasmine": "1.6.1",
     "@mfl/jasmine-n-matchers": "2.1.1",
     "babel-eslint": "7.2.3",
