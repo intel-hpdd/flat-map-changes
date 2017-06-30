@@ -1,6 +1,6 @@
 // @flow
 
-import '@mfl/jasmine-n-matchers';
+import '@iml/jasmine-n-matchers';
 
 /*global describe beforeEach it expect spyOn jasmine:true*/
 

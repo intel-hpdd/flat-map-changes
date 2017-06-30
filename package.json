@@ -1,5 +1,5 @@
 {
-  "name": "@mfl/flat-map-changes",
+  "name": "@iml/flat-map-changes",
   "version": "1.0.3",
   "description": "Highland.js flatMap transform that creates a new source when it's upstream changes.",
   "main": "source/index.js",
@@ -29,15 +29,15 @@
       "/test"
     ],
     "transformIgnorePatterns": [
-      "/node_modules/(?!@mfl)/"
+      "/node_modules/(?!@iml)/"
     ]
   },
-  "author": "MFL Team",
+  "author": "IML Team",
   "license": "MIT",
   "devDependencies": {
-    "@mfl/flow-highland": "4.2.4",
-    "@mfl/flow-jasmine": "1.6.1",
-    "@mfl/jasmine-n-matchers": "2.1.1",
+    "@iml/flow-highland": "4.2.4",
+    "@iml/flow-jasmine": "1.6.1",
+    "@iml/jasmine-n-matchers": "2.1.1",
     "babel-eslint": "7.2.3",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "babel-preset-env": "1.4.0",
