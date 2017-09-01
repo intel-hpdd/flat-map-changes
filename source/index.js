@@ -43,5 +43,9 @@ export default <A, B>(
         next();
       }
     });
-  }).onDestroy(() => in$.destroy());
+  }).onDestroy(() => {
+    in$.destroy();
+
+    if (data$) data$.destroy();
+  });
 };

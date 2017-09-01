@@ -1,7 +1,5 @@
 // @flow
 
-import { describe, beforeEach, spyOn, it, expect, jasmine } from './jasmine.js';
-
 import flatMapChanges from '../source/index.js';
 import highland from 'highland';
 
@@ -14,16 +12,18 @@ describe('flat map changes', () => {
   let stream, flatMapper, getFlatMapped$, source$;
 
   beforeEach(() => {
-    flatMapper = jasmine.createSpy('flatMapper').and.callFake(() => {
-      const flatMapped$ = highland();
-      spyOn(flatMapped$, 'destroy').and.callThrough();
-      return flatMapped$;
+    let mockFlatMapped$;
+
+    flatMapper = jest.fn(() => {
+      mockFlatMapped$ = highland();
+      jest.spyOn(mockFlatMapped$, 'destroy');
+      return mockFlatMapped$;
     });
 
-    getFlatMapped$ = () => flatMapper.calls.first().returnValue;
+    getFlatMapped$ = () => mockFlatMapped$;
 
     source$ = highland();
-    spyOn(source$, 'destroy');
+    jest.spyOn(source$, 'destroy');
 
     stream = flatMapChanges(flatMapper, source$);
   });
@@ -37,7 +37,7 @@ describe('flat map changes', () => {
 
     stream.each(() => {});
 
-    expect(flatMapper).toHaveBeenCalledOnceWith('bar');
+    expect(flatMapper).toBeCalledWith('bar');
   });
 
   it('should push errors from upstream downstream', done => {
@@ -78,19 +78,34 @@ describe('flat map changes', () => {
 
   it('should destroy the downstream when the upstream gets a new token', () => {
     source$.write('foo');
+
+    stream.each(() => {});
+    const s = getFlatMapped$();
+
     source$.write('bar');
+
+    expect(s.destroy).toHaveBeenCalled();
+  });
+
+  it('should destroy the upstream when stream is destroyed', () => {
+    stream.destroy();
+
+    expect(source$.destroy).toBeCalledWith();
+  });
+
+  it('should destroy the downstream when stream is destroyed', () => {
+    expect.assertions(2);
+
+    source$.write('foo');
 
     stream.each(() => {});
 
     const s = getFlatMapped$();
 
-    expect(s.destroy).toHaveBeenCalled();
-  });
-
-  it('should destroy the upstream when downstream is destroyed', () => {
     stream.destroy();
 
-    expect(source$.destroy).toHaveBeenCalledOnce();
+    expect(source$.destroy).toBeCalledWith();
+    expect(s.destroy).toBeCalledWith();
   });
 
   it('should push nil from upstream to downstream', done => {

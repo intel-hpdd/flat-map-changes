@@ -4,6 +4,8 @@
 .flowconfig
 .babelrc
 .gitignore
+.npmignore
+.travis.yml
 *.log
 /test
 /coverage
